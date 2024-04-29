@@ -54,9 +54,9 @@ async function run() {
 
 
         // update
-        app.get('/addTouristsSpot/:id', async(req,res)=> {
+        app.get('/addTouristsSpot/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId()}
+            const query = { _id: new ObjectId() }
             const result = await touristCollection.findOne(query)
             res.send(result);
         })
@@ -67,6 +67,31 @@ async function run() {
             console.log(newSpot)
             const result = await touristCollection.insertOne(newSpot)
             res.send(result)
+        })
+
+
+        app.put('/addTouristsSpot/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedSpot = req.body
+            const updated = {
+                $set: {
+                    name: updatedSpot.name,
+                    tourist: updatedSpot.tourist,
+                    location: updatedSpot.location,
+                    travel: updatedSpot.travel,
+                    seasonality: updatedSpot.seasonality,
+                    average: updatedSpot.average,
+                    description: updatedSpot.description,
+                    photo: updatedSpot.photo,
+                    visitor: updatedSpot.visitor,
+
+                }
+            }
+            const result = await touristCollection.updateOne(filter, updated,options)
+            res.send(result)
+
         })
 
 
